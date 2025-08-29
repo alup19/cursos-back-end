@@ -4,8 +4,8 @@ import cors from 'cors'
 import routesTiposCursos from './routes/tiposcursos'
 import routesProfessores from './routes/professores'
 import routesCursos from './routes/cursos'
+import routesClientes from './routes/clientes'
 // import routesDuvidas from './routes/duvidas'
-// import routesClientes from './routes/clientes'
 // import routesAdmins from './routes/admins'
 
 const app = express()
@@ -17,8 +17,8 @@ app.use(cors())
 app.use("/tiposcursos", routesTiposCursos)
 app.use("/professores", routesProfessores)
 app.use("/cursos", routesCursos)
+app.use("/clientes", routesClientes)
 // app.use("/duvidas", routesDuvidas)
-// app.use("/clientes", routesClientes)
 // app.use("/admins", routesAdmins)
 
 app.get('/', (req, res) => {

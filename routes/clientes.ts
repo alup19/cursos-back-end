@@ -7,7 +7,7 @@ const prisma = new PrismaClient()
 
 const router = Router()
 
-const professorSchema = z.object({
+const clienteSchema = z.object({
   nome: z.string().min(2,
     { message: "Titulo deve possuir, no mínimo, 2 caracteres" }),
   email: z.string(),
@@ -19,8 +19,8 @@ const professorSchema = z.object({
 
 router.get("/", async (req, res) => {
   try {
-    const professores = await prisma.professor.findMany()
-    res.status(200).json(professores)
+    const clientes = await prisma.cliente.findMany()
+    res.status(200).json(clientes)
   } catch (error) {
     res.status(500).json({ erro: error })
   }
@@ -81,7 +81,7 @@ function validaSenha(senha: string) {
 
 router.post("/", async (req, res) => {
 
-  const valida = professorSchema.safeParse(req.body)
+  const valida = clienteSchema.safeParse(req.body)
   if (!valida.success) {
     res.status(400).json({ erro: valida.error })
     return
@@ -103,12 +103,12 @@ router.post("/", async (req, res) => {
 
   // para o campo senha, atribui o hash gerado
   try {
-    const professores = await prisma.professor.create({
+    const clientes = await prisma.cliente.create({
       data: {
         nome, email, senha: hash, telefone, endereco
       }
     })
-    res.status(201).json(professores)
+    res.status(201).json(clientes)
   } catch (error) {
     res.status(400).json({ error })
   }
@@ -117,10 +117,10 @@ router.post("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   const { id } = req.params
   try {
-    const professores = await prisma.professor.findUnique({
+    const clientes = await prisma.cliente.findUnique({
       where: { id }
     })
-    res.status(200).json(professores)
+    res.status(200).json(clientes)
   } catch (error) {
     res.status(400).json(error)
   }

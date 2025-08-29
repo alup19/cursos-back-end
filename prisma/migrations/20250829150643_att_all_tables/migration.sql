@@ -8,11 +8,13 @@ CREATE TABLE "tiposcursos" (
 
 -- CreateTable
 CREATE TABLE "professores" (
-    "id" SERIAL NOT NULL,
+    "id" VARCHAR(36) NOT NULL,
     "nome" VARCHAR(30) NOT NULL,
     "email" VARCHAR(50) NOT NULL,
+    "senha" VARCHAR(60) NOT NULL,
     "telefone" VARCHAR(11) NOT NULL,
     "endereco" VARCHAR(100) NOT NULL,
+    "aprovado" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "professores_pkey" PRIMARY KEY ("id")
 );
@@ -28,14 +30,24 @@ CREATE TABLE "cursos" (
     "destaque" BOOLEAN NOT NULL DEFAULT true,
     "created_At" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_At" TIMESTAMP(3) NOT NULL,
-    "professorId" INTEGER NOT NULL,
     "tipoCursoId" INTEGER NOT NULL,
 
     CONSTRAINT "cursos_pkey" PRIMARY KEY ("id")
 );
 
--- AddForeignKey
-ALTER TABLE "cursos" ADD CONSTRAINT "cursos_professorId_fkey" FOREIGN KEY ("professorId") REFERENCES "professores"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+-- CreateTable
+CREATE TABLE "clientes" (
+    "id" VARCHAR(36) NOT NULL,
+    "nome" VARCHAR(30) NOT NULL,
+    "email" VARCHAR(50) NOT NULL,
+    "senha" VARCHAR(60) NOT NULL,
+    "created_At" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_At" TIMESTAMP(3) NOT NULL,
+    "endereco" VARCHAR(100) NOT NULL,
+    "telefone" VARCHAR(11) NOT NULL,
+
+    CONSTRAINT "clientes_pkey" PRIMARY KEY ("id")
+);
 
 -- AddForeignKey
 ALTER TABLE "cursos" ADD CONSTRAINT "cursos_tipoCursoId_fkey" FOREIGN KEY ("tipoCursoId") REFERENCES "tiposcursos"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

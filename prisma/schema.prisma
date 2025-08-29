@@ -21,14 +21,16 @@ model TipoCurso {
 }
 
 model Professor {
-  id            Int           @id @default(autoincrement())
+  id            String        @db.VarChar(36) @id @default(uuid())
   nome          String        @db.VarChar(30)
   email         String        @db.VarChar(50)
+  senha         String        @db.VarChar(60)
   telefone      String        @db.VarChar(11)
   endereco      String        @db.VarChar(100)
+  aprovado      Boolean       @default(false)
   // admin         Admin         @relation(fields: [adminId], references: [id])
   // adminId       Int
-  cursos        Curso[]
+  // cursos        Curso[]
   @@map("professores")
 }
 
@@ -42,8 +44,8 @@ model Curso {
   destaque        Boolean       @default(true)
   created_At      DateTime      @default(now())
   updated_At      DateTime      @updatedAt()
-  professor       Professor     @relation(fields: [professorId], references: [id])
-  professorId     Int
+  // professor       Professor     @relation(fields: [professorId], references: [id])
+  // professorId     Int
   tipoCurso       TipoCurso     @relation(fields: [tipoCursoId], references: [id])
   tipoCursoId     Int
   // admin           Admin         @relation(fields: [adminId], references: [id])
@@ -67,24 +69,24 @@ model Curso {
 //   @@map("duvidas")
 // }
 
-// model Cliente {
-//   id              Int           @id @default(autoincrement())
-//   nome            String        @db.VarChar(30)
-//   email           String        @db.VarChar(50)
-//   senha           String
-//   created_At      DateTime      @default(now())
-//   updated_At      DateTime      @updatedAt()
-//   endereco        String        @db.VarChar(100)
-//   telefone        String        @db.VarChar(11)
-//   duvidas         Duvida[]
-//   @@map("clientes")
-// }
+model Cliente {
+  id              String        @db.VarChar(36) @id @default(uuid())
+  nome            String        @db.VarChar(30)
+  email           String        @db.VarChar(50)
+  senha           String        @db.VarChar(60)
+  created_At      DateTime      @default(now())
+  updated_At      DateTime      @updatedAt()
+  endereco        String        @db.VarChar(100)
+  telefone        String        @db.VarChar(11)
+  // duvidas         Duvida[]
+  @@map("clientes")
+}
 
 // model Admin {
-//   id             Int          @id @default(autoincrement())
+//   id             String       @db.VarChar(36) @id @default(uuid())
 //   nome           String       @db.VarChar(30)
 //   email          String       @db.VarChar(50)
-//   senha          String
+//   senha          String       @db.VarChar(60)
 //   cursos         Curso[]
 //   professores    Professor[]
 //   duvidas        Duvida[]

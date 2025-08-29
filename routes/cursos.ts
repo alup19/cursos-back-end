@@ -15,7 +15,6 @@ const cursoSchema = z.object({
   descricao: z.string().min(10,
     { message: "Descrição deve possuir, no mínimo, 10 caracteres" }),
   destaque: z.boolean().optional(),
-  professorId: z.number(),
   tipoCursoId: z.number(),
   // adminId: z.number(),
 })
@@ -24,7 +23,6 @@ router.get("/", async (req, res) => {
   try {
     const cursos = await prisma.curso.findMany({
       include: {
-        professor: true,
         tipoCurso: true,
         // admin: true,
       }
@@ -42,7 +40,6 @@ router.get("/:id", async (req, res) => {
     const cursos = await prisma.curso.findFirst({
       where: { id: Number(id)},
       include: {
-        professor: true,
         tipoCurso: true,
         // admin: true,
       }
@@ -61,12 +58,12 @@ router.post("/", async (req, res) => {
     return
   }
 
-  const { titulo, preco, foto, cargaHoraria, descricao, destaque, professorId, tipoCursoId } = valida.data
+  const { titulo, preco, foto, cargaHoraria, descricao, destaque, tipoCursoId } = valida.data
 
   try {
     const cursos = await prisma.curso.create({
       data: {
-        titulo, preco, foto, cargaHoraria, descricao, destaque, professorId, tipoCursoId
+        titulo, preco, foto, cargaHoraria, descricao, destaque, tipoCursoId
       }
     })
     res.status(201).json(cursos)
@@ -97,13 +94,13 @@ router.put("/:id", async (req, res) => {
     return
   }
 
-  const { titulo, preco, foto, cargaHoraria, descricao, destaque, professorId, tipoCursoId  } = valida.data
+  const { titulo, preco, foto, cargaHoraria, descricao, destaque, tipoCursoId  } = valida.data
 
   try {
     const cursos = await prisma.curso.update({
       where: { id: Number(id) },
       data: {
-        titulo, preco, foto, cargaHoraria, descricao, destaque, professorId, tipoCursoId 
+        titulo, preco, foto, cargaHoraria, descricao, destaque, tipoCursoId 
       }
     })
     res.status(200).json(cursos)
@@ -123,7 +120,6 @@ router.get("/pesquisa/:termo", async (req, res) => {
     try {
       const cursos = await prisma.curso.findMany({
         include: {
-          professor: true,
           tipoCurso: true,
           // admin: true,
         },
@@ -143,7 +139,6 @@ router.get("/pesquisa/:termo", async (req, res) => {
       try {
         const cursos = await prisma.curso.findMany({
           include: {
-            professor: true,
             tipoCurso: true,
             // admin: true,
           },
@@ -157,7 +152,6 @@ router.get("/pesquisa/:termo", async (req, res) => {
       try {
         const cursos = await prisma.curso.findMany({
           include: {
-            professor: true,
             tipoCurso: true,
             // admin: true,
           },
