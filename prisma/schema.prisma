@@ -1,0 +1,92 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgres"
+  url      = env("DATABASE_URL")
+}
+
+model TipoCurso {
+  id             Int          @id @default(autoincrement())
+  nome           String       @db.VarChar(30)
+  cursos         Curso[]
+  @@map("tiposcursos")
+}
+
+model Professor {
+  id            Int           @id @default(autoincrement())
+  nome          String        @db.VarChar(30)
+  email         String        @db.VarChar(50)
+  telefone      String        @db.VarChar(11)
+  endereco      String        @db.VarChar(100)
+  // admin         Admin         @relation(fields: [adminId], references: [id])
+  // adminId       Int
+  cursos        Curso[]
+  @@map("professores")
+}
+
+model Curso {
+  id              Int           @id @default(autoincrement())
+  titulo          String        @db.VarChar(30)
+  preco           Decimal       @db.Decimal(10, 2)
+  foto            String
+  cargaHoraria    String        @db.VarChar(5)
+  descricao       String        @db.VarChar(100)
+  destaque        Boolean       @default(true)
+  created_At      DateTime      @default(now())
+  updated_At      DateTime      @updatedAt()
+  professor       Professor     @relation(fields: [professorId], references: [id])
+  professorId     Int
+  tipoCurso       TipoCurso     @relation(fields: [tipoCursoId], references: [id])
+  tipoCursoId     Int
+  // admin           Admin         @relation(fields: [adminId], references: [id])
+  // adminId         Int
+  // duvidas         Duvida[]
+  @@map("cursos")
+}
+
+// model Duvida {
+//   id              Int           @id @default(autoincrement())
+//   descricao       String        @db.VarChar(100)
+//   resposta        String?
+//   created_At      DateTime      @default(now())
+//   updated_At      DateTime      @updatedAt()
+//   cliente         Cliente       @relation(fields: [clienteId], references: [id])
+//   clienteId       Int
+//   curso           Curso         @relation(fields: [cursoId], references: [id])
+//   cursoId         Int
+//   admin           Admin         @relation(fields: [adminId], references: [id])
+//   adminId         Int
+//   @@map("duvidas")
+// }
+
+// model Cliente {
+//   id              Int           @id @default(autoincrement())
+//   nome            String        @db.VarChar(30)
+//   email           String        @db.VarChar(50)
+//   senha           String
+//   created_At      DateTime      @default(now())
+//   updated_At      DateTime      @updatedAt()
+//   endereco        String        @db.VarChar(100)
+//   telefone        String        @db.VarChar(11)
+//   duvidas         Duvida[]
+//   @@map("clientes")
+// }
+
+// model Admin {
+//   id             Int          @id @default(autoincrement())
+//   nome           String       @db.VarChar(30)
+//   email          String       @db.VarChar(50)
+//   senha          String
+//   cursos         Curso[]
+//   professores    Professor[]
+//   duvidas        Duvida[]
+//   @@map("admins")
+// }
