@@ -28,9 +28,7 @@ model Professor {
   telefone      String        @db.VarChar(11)
   endereco      String        @db.VarChar(100)
   aprovado      Boolean       @default(false)
-  // admin         Admin         @relation(fields: [adminId], references: [id])
-  // adminId       Int
-  // cursos        Curso[]
+  cursos        Curso[]
   @@map("professores")
 }
 
@@ -44,30 +42,30 @@ model Curso {
   destaque        Boolean       @default(true)
   created_At      DateTime      @default(now())
   updated_At      DateTime      @updatedAt()
-  // professor       Professor     @relation(fields: [professorId], references: [id])
-  // professorId     Int
+  professor       Professor     @relation(fields: [professorId], references: [id])
+  professorId     String        @db.VarChar(36)
   tipoCurso       TipoCurso     @relation(fields: [tipoCursoId], references: [id])
   tipoCursoId     Int
   // admin           Admin         @relation(fields: [adminId], references: [id])
   // adminId         Int
-  // duvidas         Duvida[]
+  duvidas         Duvida[]
   @@map("cursos")
 }
 
-// model Duvida {
-//   id              Int           @id @default(autoincrement())
-//   descricao       String        @db.VarChar(100)
-//   resposta        String?
-//   created_At      DateTime      @default(now())
-//   updated_At      DateTime      @updatedAt()
-//   cliente         Cliente       @relation(fields: [clienteId], references: [id])
-//   clienteId       Int
-//   curso           Curso         @relation(fields: [cursoId], references: [id])
-//   cursoId         Int
-//   admin           Admin         @relation(fields: [adminId], references: [id])
-//   adminId         Int
-//   @@map("duvidas")
-// }
+model Duvida {
+  id              Int           @id @default(autoincrement())
+  descricao       String        @db.VarChar(100)
+  resposta        String?
+  created_At      DateTime      @default(now())
+  updated_At      DateTime      @updatedAt()
+  cliente         Cliente       @relation(fields: [clienteId], references: [id])
+  clienteId       String        @db.VarChar(36)
+  curso           Curso         @relation(fields: [cursoId], references: [id])
+  cursoId         Int
+  // admin           Admin         @relation(fields: [adminId], references: [id])
+  // adminId         Int
+  @@map("duvidas")
+}
 
 model Cliente {
   id              String        @db.VarChar(36) @id @default(uuid())
@@ -78,7 +76,7 @@ model Cliente {
   updated_At      DateTime      @updatedAt()
   endereco        String        @db.VarChar(100)
   telefone        String        @db.VarChar(11)
-  // duvidas         Duvida[]
+  duvidas         Duvida[]
   @@map("clientes")
 }
 

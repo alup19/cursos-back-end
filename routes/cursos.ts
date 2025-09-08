@@ -15,6 +15,7 @@ const cursoSchema = z.object({
   descricao: z.string().min(10,
     { message: "Descrição deve possuir, no mínimo, 10 caracteres" }),
   destaque: z.boolean().optional(),
+  professorId: z.string(),
   tipoCursoId: z.number(),
   // adminId: z.number(),
 })
@@ -58,12 +59,12 @@ router.post("/", async (req, res) => {
     return
   }
 
-  const { titulo, preco, foto, cargaHoraria, descricao, destaque, tipoCursoId } = valida.data
+  const { titulo, preco, foto, cargaHoraria, descricao, destaque, professorId, tipoCursoId } = valida.data
 
   try {
     const cursos = await prisma.curso.create({
       data: {
-        titulo, preco, foto, cargaHoraria, descricao, destaque, tipoCursoId
+        titulo, preco, foto, cargaHoraria, descricao, destaque, professorId, tipoCursoId
       }
     })
     res.status(201).json(cursos)
