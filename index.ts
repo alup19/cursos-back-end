@@ -3,8 +3,10 @@ import cors from 'cors'
 
 import routesTiposCursos from './routes/tiposcursos'
 import routesProfessores from './routes/professores'
+import routesLoginProf from './routes/loginProfessores'
 import routesCursos from './routes/cursos'
 import routesClientes from './routes/clientes'
+import routesLoginCli from './routes/loginClientes'
 import routesDuvidas from './routes/duvidas'
 // import routesAdmins from './routes/admins'
 
@@ -16,8 +18,10 @@ app.use(cors())
 
 app.use("/tiposcursos", routesTiposCursos)
 app.use("/professores", routesProfessores)
+app.use("/professores/login", routesLoginProf)
 app.use("/cursos", routesCursos)
 app.use("/clientes", routesClientes)
+app.use("/clientes/login", routesLoginCli)
 app.use("/duvidas", routesDuvidas)
 // app.use("/admins", routesAdmins)
 
