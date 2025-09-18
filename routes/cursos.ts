@@ -17,6 +17,7 @@ const cursoSchema = z.object({
   destaque: z.boolean().optional(),
   professorId: z.number(),
   tipoCursoId: z.number(),
+  adminId: z.string()
 })
 
 router.get("/", async (req, res) => {
@@ -76,12 +77,12 @@ router.post("/", async (req, res) => {
     return
   }
 
-  const { titulo, preco, foto, cargaHoraria, descricao, destaque, professorId, tipoCursoId } = valida.data
+  const { titulo, preco, foto, cargaHoraria, descricao, destaque, professorId, tipoCursoId, adminId } = valida.data
 
   try {
     const cursos = await prisma.curso.create({
       data: {
-        titulo, preco, foto, cargaHoraria, descricao, destaque, professorId, tipoCursoId
+        titulo, preco, foto, cargaHoraria, descricao, destaque, professorId, tipoCursoId, adminId
       }
     })
     res.status(201).json(cursos)
@@ -113,12 +114,14 @@ router.put("/:id", async (req, res) => {
   }
 
   const { titulo, preco, foto, cargaHoraria, descricao, destaque, professorId, tipoCursoId } = valida.data
+        // talvez precise adicionar o adminId aqui tmb pra mostrar quem foi o admin que alterou
 
   try {
     const cursos = await prisma.curso.update({
       where: { id: Number(id) },
       data: {
         titulo, preco, foto, cargaHoraria, descricao, destaque, professorId, tipoCursoId
+        //
       }
     })
     res.status(200).json(cursos)
