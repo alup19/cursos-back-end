@@ -21,14 +21,10 @@ model TipoCurso {
 }
 
 model Professor {
-  id            String        @db.VarChar(36) @id @default(uuid())
+  id            Int           @id @default(autoincrement())
   nome          String        @db.VarChar(30)
   email         String        @db.VarChar(50)
-  senha         String        @db.VarChar(60)
   telefone      String        @db.VarChar(11)
-  endereco      String        @db.VarChar(100)
-  aprovado      Boolean       @default(false)
-  cursos        Curso[]
   @@map("professores")
 }
 
@@ -42,12 +38,10 @@ model Curso {
   destaque        Boolean       @default(true)
   created_At      DateTime      @default(now())
   updated_At      DateTime      @updatedAt()
-  professor       Professor     @relation(fields: [professorId], references: [id])
-  professorId     String        @db.VarChar(36)
   tipoCurso       TipoCurso     @relation(fields: [tipoCursoId], references: [id])
   tipoCursoId     Int
-  // admin           Admin         @relation(fields: [adminId], references: [id])
-  // adminId         Int
+  admin           Admin?         @relation(fields: [adminId], references: [id])
+  adminId         String?       @db.VarChar(36)
   duvidas         Duvida[]
   @@map("cursos")
 }
@@ -62,8 +56,8 @@ model Duvida {
   clienteId       String        @db.VarChar(36)
   curso           Curso         @relation(fields: [cursoId], references: [id])
   cursoId         Int
-  // admin           Admin         @relation(fields: [adminId], references: [id])
-  // adminId         Int
+  admin           Admin?        @relation(fields: [adminId], references: [id])
+  adminId         String?
   @@map("duvidas")
 }
 
@@ -74,19 +68,21 @@ model Cliente {
   senha           String        @db.VarChar(60)
   created_At      DateTime      @default(now())
   updated_At      DateTime      @updatedAt()
-  endereco        String        @db.VarChar(100)
+  cidade        String        @db.VarChar(100)
   telefone        String        @db.VarChar(11)
   duvidas         Duvida[]
   @@map("clientes")
 }
 
-// model Admin {
-//   id             String       @db.VarChar(36) @id @default(uuid())
-//   nome           String       @db.VarChar(30)
-//   email          String       @db.VarChar(50)
-//   senha          String       @db.VarChar(60)
-//   cursos         Curso[]
-//   professores    Professor[]
-//   duvidas        Duvida[]
-//   @@map("admins")
-// }
+model Admin {
+  id             String       @db.VarChar(36) @id @default(uuid())
+  nome           String       @db.VarChar(30)
+  email          String       @db.VarChar(50)
+  senha          String       @db.VarChar(60)
+  nivel         Int      @db.SmallInt @default(2)
+  created_At      DateTime      @default(now())
+  updated_At      DateTime      @updatedAt()
+  cursos         Curso[]
+  duvidas        Duvida[]
+  @@map("admins")
+}
