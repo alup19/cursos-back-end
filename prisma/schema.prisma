@@ -43,7 +43,7 @@ model Curso {
   professorId     Int
   tipoCurso       TipoCurso     @relation(fields: [tipoCursoId], references: [id])
   tipoCursoId     Int
-  admin           Admin?         @relation(fields: [adminId], references: [id])
+  admin           Admin?        @relation(fields: [adminId], references: [id])
   adminId         String?       @db.VarChar(36)
   duvidas         Duvida[]
   @@map("cursos")
@@ -71,7 +71,7 @@ model Cliente {
   senha           String        @db.VarChar(60)
   created_At      DateTime      @default(now())
   updated_At      DateTime      @updatedAt()
-  cidade        String        @db.VarChar(100)
+  cidade        String          @db.VarChar(100)
   telefone        String        @db.VarChar(11)
   duvidas         Duvida[]
   @@map("clientes")
@@ -82,9 +82,9 @@ model Admin {
   nome           String       @db.VarChar(30)
   email          String       @db.VarChar(50)
   senha          String       @db.VarChar(60)
-  nivel         Int      @db.SmallInt @default(2)
-  created_At      DateTime      @default(now())
-  updated_At      DateTime      @updatedAt()
+  nivel          Int          @db.SmallInt @default(2)
+  created_At     DateTime     @default(now())
+  updated_At     DateTime     @updatedAt()
   cursos         Curso[]
   duvidas        Duvida[]
   @@map("admins")

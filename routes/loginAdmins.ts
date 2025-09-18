@@ -9,47 +9,38 @@ const router = Router()
 router.post("/", async (req, res) => {
   const { email, senha } = req.body
 
-  // em termos de segurança, o recomendado é exibir uma mensagem padrão
-  // a fim de evitar de dar "dicas" sobre o processo de login para hackers
   const mensaPadrao = "Login ou senha incorretos"
 
   if (!email || !senha) {
-    // res.status(400).json({ erro: "Informe e-mail e senha do usuário" })
     res.status(400).json({ erro: mensaPadrao })
     return
   }
 
   try {
-    const professor = await prisma.professor.findFirst({
+    const admin = await prisma.admin.findFirst({
       where: { email }
     })
 
-    if (professor == null) {
-      // res.status(400).json({ erro: "E-mail inválido" })
+    if (admin == null) {
       res.status(400).json({ erro: mensaPadrao })
       return
     }
 
-    if (professor.aprovado == false) {
-      res.status(400).json({ erro: "O professor ainda não foi aprovado pelo ADM" })
-      return
-    }
-
-    // se o e-mail existe, faz-se a comparação dos hashs
-    if (bcrypt.compareSync(senha, professor.senha)) {
-      // se confere, gera e retorna o token
+    if (bcrypt.compareSync(senha, admin.senha)) {
       const token = jwt.sign({
-        clienteLogadoId: professor.id,
-        clienteLogadoNome: professor.nome
+        adminLogadoId: admin.id,
+        adminLogadoNome: admin.nome,
+        adminLogadoNivel: admin.nivel
       },
         process.env.JWT_KEY as string,
         { expiresIn: "1h" }
       )
 
       res.status(200).json({
-        id: professor.id,
-        nome: professor.nome,
-        email: professor.email,
+        id: admin.id,
+        nome: admin.nome,
+        email: admin.email,
+        nivel: admin.nivel,
         token
       })
     } else {

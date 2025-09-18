@@ -15,9 +15,8 @@ const cursoSchema = z.object({
   descricao: z.string().min(10,
     { message: "Descrição deve possuir, no mínimo, 10 caracteres" }),
   destaque: z.boolean().optional(),
-  professorId: z.string(),
+  professorId: z.number(),
   tipoCursoId: z.number(),
-  // adminId: z.number(),
 })
 
 router.get("/", async (req, res) => {
@@ -25,7 +24,24 @@ router.get("/", async (req, res) => {
     const cursos = await prisma.curso.findMany({
       include: {
         tipoCurso: true,
-        // admin: true,
+        professor: true,
+        admin: true,
+      }
+    })
+    res.status(200).json(cursos)
+  } catch (error) {
+    res.status(500).json({ erro: error })
+  }
+})
+
+router.get("/destaques", async (req, res) => {
+  try {
+    const cursos = await prisma.curso.findMany({
+      include: {
+        tipoCurso: true,
+      },
+      where: {
+        destaque: true
       }
     })
     res.status(200).json(cursos)
@@ -42,7 +58,8 @@ router.get("/:id", async (req, res) => {
       where: { id: Number(id)},
       include: {
         tipoCurso: true,
-        // admin: true,
+        professor: true,
+        admin: true,
       }
     })
     res.status(200).json(cursos)
@@ -95,13 +112,13 @@ router.put("/:id", async (req, res) => {
     return
   }
 
-  const { titulo, preco, foto, cargaHoraria, descricao, destaque, tipoCursoId  } = valida.data
+  const { titulo, preco, foto, cargaHoraria, descricao, destaque, professorId, tipoCursoId } = valida.data
 
   try {
     const cursos = await prisma.curso.update({
       where: { id: Number(id) },
       data: {
-        titulo, preco, foto, cargaHoraria, descricao, destaque, tipoCursoId 
+        titulo, preco, foto, cargaHoraria, descricao, destaque, professorId, tipoCursoId
       }
     })
     res.status(200).json(cursos)
@@ -113,16 +130,15 @@ router.put("/:id", async (req, res) => {
 router.get("/pesquisa/:termo", async (req, res) => {
   const { termo } = req.params
 
-  // tenta converter para número
   const termoNumero = Number(termo)
 
-  // is Not a Number, ou seja, se não é um número: filtra por texto
   if (isNaN(termoNumero)) {
     try {
       const cursos = await prisma.curso.findMany({
         include: {
           tipoCurso: true,
-          // admin: true,
+          professor: true,
+          admin: true,
         },
         where: {
           OR: [
@@ -141,7 +157,8 @@ router.get("/pesquisa/:termo", async (req, res) => {
         const cursos = await prisma.curso.findMany({
           include: {
             tipoCurso: true,
-            // admin: true,
+            professor: true,
+            admin: true,
           },
           where: { preco: termoNumero }
         })
@@ -154,7 +171,8 @@ router.get("/pesquisa/:termo", async (req, res) => {
         const cursos = await prisma.curso.findMany({
           include: {
             tipoCurso: true,
-            // admin: true,
+            professor: true,
+            admin: true,
           },
           where: { preco: { lte: termoNumero } }
         })

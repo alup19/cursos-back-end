@@ -1,27 +1,27 @@
-import { PrismaClient } from '@prisma/client'
-import { Router } from 'express'
+import { PrismaClient } from "@prisma/client"
+import { Router } from "express"
 import bcrypt from 'bcrypt'
 import { z } from 'zod'
 
 const prisma = new PrismaClient()
-
 const router = Router()
 
-const clienteSchema = z.object({
-  nome: z.string().min(2,
-    { message: "Titulo deve possuir, no mínimo, 2 caracteres" }),
-  email: z.string(),
+const adminSchema = z.object({
+  nome: z.string().min(10,
+    { message: "Nome deve possuir, no mínimo, 10 caracteres" }),
+  email: z.string().email(),
   senha: z.string(),
-  telefone: z.string(),
-  cidade: z.string(),
+  nivel: z.number()
+    .min(1, { message: "Nível, no mínimo, 1" })
+    .max(5, { message: "Nível, no máximo, 5" })
 })
 
 router.get("/", async (req, res) => {
   try {
-    const clientes = await prisma.cliente.findMany()
-    res.status(200).json(clientes)
+    const admins = await prisma.admin.findMany()
+    res.status(200).json(admins)
   } catch (error) {
-    res.status(500).json({ erro: error })
+    res.status(400).json(error)
   }
 })
 
@@ -37,6 +37,7 @@ function validaSenha(senha: string) {
   let grandes = 0
   let numeros = 0
   let simbolos = 0
+
 
   for (const letra of senha) {
     if ((/[a-z]/).test(letra)) {
@@ -73,7 +74,7 @@ function validaSenha(senha: string) {
 
 router.post("/", async (req, res) => {
 
-  const valida = clienteSchema.safeParse(req.body)
+  const valida = adminSchema.safeParse(req.body)
   if (!valida.success) {
     res.status(400).json({ erro: valida.error })
     return
@@ -88,27 +89,25 @@ router.post("/", async (req, res) => {
   const salt = bcrypt.genSaltSync(12)
   const hash = bcrypt.hashSync(valida.data.senha, salt)
 
-  const { nome, email, telefone, cidade } = valida.data
+  const { nome, email, nivel } = valida.data
 
   try {
-    const clientes = await prisma.cliente.create({
-      data: {
-        nome, email, senha: hash, telefone, cidade
-      }
+    const admin = await prisma.admin.create({
+      data: { nome, email, senha: hash, nivel }
     })
-    res.status(201).json(clientes)
+    res.status(201).json(admin)
   } catch (error) {
-    res.status(400).json({ error })
+    res.status(400).json(error)
   }
 })
 
 router.get("/:id", async (req, res) => {
   const { id } = req.params
   try {
-    const clientes = await prisma.cliente.findUnique({
+    const admin = await prisma.admin.findFirst({
       where: { id }
     })
-    res.status(200).json(clientes)
+    res.status(200).json(admin)
   } catch (error) {
     res.status(400).json(error)
   }
