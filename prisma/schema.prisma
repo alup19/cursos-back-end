@@ -25,6 +25,7 @@ model Professor {
   nome          String        @db.VarChar(30)
   email         String        @db.VarChar(50)
   telefone      String        @db.VarChar(11)
+  cursos        Curso[]
   @@map("professores")
 }
 
@@ -38,6 +39,8 @@ model Curso {
   destaque        Boolean       @default(true)
   created_At      DateTime      @default(now())
   updated_At      DateTime      @updatedAt()
+  professor       Professor     @relation(fields: [professorId], references: [id])
+  professorId     Int
   tipoCurso       TipoCurso     @relation(fields: [tipoCursoId], references: [id])
   tipoCursoId     Int
   admin           Admin?         @relation(fields: [adminId], references: [id])
