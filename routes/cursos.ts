@@ -40,6 +40,8 @@ router.get("/destaques", async (req, res) => {
     const cursos = await prisma.curso.findMany({
       include: {
         tipoCurso: true,
+        professor: true,
+        admin: true,
       },
       where: {
         destaque: true
