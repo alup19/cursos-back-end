@@ -2,6 +2,8 @@ import { PrismaClient } from '@prisma/client'
 import { Router } from 'express'
 import { z } from 'zod'
 
+import { verificaToken } from '../middlewares/verificaToken'
+
 const prisma = new PrismaClient()
 
 const router = Router()
@@ -116,14 +118,12 @@ router.put("/:id", async (req, res) => {
   }
 
   const { titulo, preco, foto, cargaHoraria, descricao, destaque, professorId, tipoCursoId } = valida.data
-        // talvez precise adicionar o adminId aqui tmb pra mostrar quem foi o admin que alterou
 
   try {
     const cursos = await prisma.curso.update({
       where: { id: Number(id) },
       data: {
         titulo, preco, foto, cargaHoraria, descricao, destaque, professorId, tipoCursoId
-        //
       }
     })
     res.status(200).json(cursos)
@@ -186,6 +186,26 @@ router.get("/pesquisa/:termo", async (req, res) => {
         res.status(500).json({ erro: error })
       }
     }
+  }
+})
+
+router.patch("/destacar/:id", verificaToken, async (req, res) => {
+  const { id } = req.params
+
+  try {
+    const cursoDestacar = await prisma.curso.findUnique({
+      where: { id: Number(id) },
+      select: { destaque: true },
+    });
+    
+    const curso = await prisma.curso.update({
+      where: { id: Number(id)},
+      data: { destaque: !cursoDestacar?.destaque }
+    })
+
+    res.status(200).json(curso)
+  } catch (error) {
+    res.status(400).json(error)
   }
 })
 

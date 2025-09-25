@@ -71,7 +71,7 @@ model Cliente {
   senha           String        @db.VarChar(60)
   created_At      DateTime      @default(now())
   updated_At      DateTime      @updatedAt()
-  cidade        String          @db.VarChar(100)
+  cidade          String        @db.VarChar(100)
   telefone        String        @db.VarChar(11)
   duvidas         Duvida[]
   @@map("clientes")
