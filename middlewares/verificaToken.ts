@@ -7,6 +7,16 @@ type TokenType = {
     userLogadoNivel: number
 }
 
+// Acrescenta na interface Request (de forma global) os 2 novos atributos (TypeScript)
+declare global {
+  namespace Express {
+    interface Request {
+      userLogadoId?: string
+      userLogadoNome?: string
+    }
+  }
+}
+
 export function verificaToken(req: Request | any, res: Response, next: NextFunction) {
     const { authorization } = req.headers
 

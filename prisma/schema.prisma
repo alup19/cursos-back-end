@@ -46,6 +46,7 @@ model Curso {
   admin           Admin?        @relation(fields: [adminId], references: [id])
   adminId         String?       @db.VarChar(36)
   duvidas         Duvida[]
+  ativo           Boolean       @default(true)
   @@map("cursos")
 }
 
@@ -87,5 +88,17 @@ model Admin {
   updated_At     DateTime     @updatedAt()
   cursos         Curso[]
   duvidas        Duvida[]
+  logs           Log[]
   @@map("admins")
+}
+
+model Log {
+  id            Int           @id @default(autoincrement())
+  admin         Admin         @relation(fields: [adminId], references: [id])
+  adminId       String        @db.VarChar(36)
+  descricao     String        @db.VarChar(60)
+  complemento   String        @db.VarChar(200)
+  created_At    DateTime      @default(now())
+  updated_At    DateTime      @updatedAt
+  @@map("logs")
 }

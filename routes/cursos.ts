@@ -25,10 +25,16 @@ const cursoSchema = z.object({
 router.get("/", async (req, res) => {
   try {
     const cursos = await prisma.curso.findMany({
+      where: {
+        ativo: true,
+      },
       include: {
         tipoCurso: true,
         professor: true,
         admin: true,
+      },
+      orderBy: {
+        id: 'desc'
       }
     })
     res.status(200).json(cursos)
@@ -40,13 +46,17 @@ router.get("/", async (req, res) => {
 router.get("/destaques", async (req, res) => {
   try {
     const cursos = await prisma.curso.findMany({
+      where: {
+        ativo: true,
+        destaque: true
+      },
       include: {
         tipoCurso: true,
         professor: true,
         admin: true,
       },
-      where: {
-        destaque: true
+      orderBy: {
+        id: 'desc'
       }
     })
     res.status(200).json(cursos)
@@ -60,7 +70,7 @@ router.get("/:id", async (req, res) => {
 
   try {
     const cursos = await prisma.curso.findFirst({
-      where: { id: Number(id)},
+      where: { id: Number(id) },
       include: {
         tipoCurso: true,
         professor: true,
@@ -95,13 +105,28 @@ router.post("/", async (req, res) => {
   }
 })
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", verificaToken, async (req, res) => {
   const { id } = req.params
 
   try {
-    const cursos = await prisma.curso.delete({
-      where: { id: Number(id) }
+    // soft delete
+    const cursos = await prisma.curso.update({
+      where: { id: Number(id) },
+      data: { ativo: false }
     })
+
+    // adminId vem do verificaToken (que acrescenta quando o usuário faz login)
+    const adminId = req.userLogadoId as string
+    const adminNome = req.userLogadoNome as string
+
+    const descricao = `Exclusão do Curso ${cursos.titulo}`
+    const complemento = `Admin: ${adminNome}`
+
+    // registra a log
+    const logs = await prisma.log.create({
+      data: { descricao, complemento, adminId }
+    })
+
     res.status(200).json(cursos)
   } catch (error) {
     res.status(400).json({ erro: error })
@@ -146,6 +171,7 @@ router.get("/pesquisa/:termo", async (req, res) => {
           admin: true,
         },
         where: {
+          ativo: true,
           OR: [
             { titulo: { contains: termo, mode: "insensitive" } },
             { tipoCurso: { nome: { equals: termo, mode: "insensitive" } } }
@@ -165,7 +191,10 @@ router.get("/pesquisa/:termo", async (req, res) => {
             professor: true,
             admin: true,
           },
-          where: { preco: termoNumero }
+          where: {
+            ativo: true,
+            preco: termoNumero
+          }
         })
         res.status(200).json(cursos)
       } catch (error) {
@@ -179,7 +208,10 @@ router.get("/pesquisa/:termo", async (req, res) => {
             professor: true,
             admin: true,
           },
-          where: { preco: { lte: termoNumero } }
+          where: {
+            ativo: true,
+            preco: { lte: termoNumero }
+          }
         })
         res.status(200).json(cursos)
       } catch (error) {
