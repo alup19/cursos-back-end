@@ -19,7 +19,7 @@ const cursoSchema = z.object({
   destaque: z.boolean().optional(),
   professorId: z.number(),
   tipoCursoId: z.number(),
-  adminId: z.string()
+  adminId: z.string().uuid()
 })
 
 router.get("/", async (req, res) => {
