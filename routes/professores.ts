@@ -48,4 +48,17 @@ router.post("/", async (req, res) => {
   }
 })
 
+router.delete("/:id", async (req, res) => {
+  const { id } = req.params
+  try {
+    const professores = await prisma.professor.delete({
+      where: { id: Number(id) }
+    })
+    res.status(200).json(professores)
+
+  } catch (error) {
+    res.status(400).json(error)
+  }
+})
+
 export default router

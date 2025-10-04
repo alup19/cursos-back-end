@@ -114,4 +114,36 @@ router.get("/:id", async (req, res) => {
   }
 })
 
+router.delete("/:id", async (req, res) => {
+  const { id } = req.params
+  try {
+    const admin = await prisma.admin.delete({
+      where: { id: id }
+    })
+    res.status(200).json(admin)
+
+  } catch (error) {
+    res.status(400).json(error)
+  }
+})
+
+router.patch("/nivel/:id/:nivel", async (req, res) => {
+  const { id, nivel } = req.params
+
+  try {
+    const admin = await prisma.admin.findUnique({
+      where: { id: id },
+    });
+    
+    const mudarNivel = await prisma.admin.update({
+      where: { id: id },
+      data: { nivel: Number(nivel) }
+    })
+
+    res.status(200).json(mudarNivel)
+  } catch (error) {
+    res.status(400).json(error)
+  }
+})
+
 export default router
