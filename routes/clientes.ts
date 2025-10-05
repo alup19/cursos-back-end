@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client'
 import { Router } from 'express'
 import bcrypt from 'bcrypt'
 import { z } from 'zod'
+import { verificaToken } from '../middlewares/verificaToken'
 
 const prisma = new PrismaClient()
 
@@ -18,7 +19,9 @@ const clienteSchema = z.object({
 
 router.get("/", async (req, res) => {
   try {
-    const clientes = await prisma.cliente.findMany()
+    const clientes = await prisma.cliente.findMany({
+      where: { ativo: true }
+    })
     res.status(200).json(clientes)
   } catch (error) {
     res.status(500).json({ erro: error })
@@ -111,6 +114,33 @@ router.get("/:id", async (req, res) => {
     res.status(200).json(clientes)
   } catch (error) {
     res.status(400).json(error)
+  }
+})
+
+router.delete("/:id", verificaToken, async (req, res) => {
+  const { id } = req.params
+
+  try {
+    const clientes = await prisma.cliente.update({
+      where: { id: id },
+      data: { ativo: false }
+    })
+
+    // adminId vem do verificaToken (que acrescenta quando o usuário faz login)
+    const adminId = req.userLogadoId as string
+    const adminNome = req.userLogadoNome as string
+
+    const descricao = `Exclusão do Cliente ${clientes.nome}`
+    const complemento = `Admin: ${adminNome}`
+
+    // registra a log
+    const logs = await prisma.log.create({
+      data: { descricao, complemento, adminId }
+    })
+
+    res.status(200).json(clientes)
+  } catch (error) {
+    res.status(400).json({ erro: error })
   }
 })
 

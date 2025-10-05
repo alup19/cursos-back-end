@@ -75,6 +75,7 @@ model Cliente {
   cidade          String        @db.VarChar(100)
   telefone        String        @db.VarChar(11)
   duvidas         Duvida[]
+  ativo           Boolean       @default(true)
   @@map("clientes")
 }
 
