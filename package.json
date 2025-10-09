@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.ts",
   "scripts": {
+    "build": "tsc",
     "dev": "npx ts-node-dev --respawn index.ts",
     "vercel-build": "npx prisma migrate deploy",
     "postinstall": "prisma generate"
