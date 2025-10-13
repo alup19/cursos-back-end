@@ -7,8 +7,12 @@ const router = Router()
 router.get("/gerais", async (req, res) => {
   try {
     const professores = await prisma.professor.count()
-    const clientes = await prisma.cliente.count()
-    const cursos = await prisma.curso.count()
+    const clientes = await prisma.cliente.count({
+      where: { ativo: true }
+    })
+    const cursos = await prisma.curso.count({
+      where: { ativo: true }
+    })
     const duvidas = await prisma.duvida.count()
     res.status(200).json({ professores, clientes, cursos, duvidas })
   } catch (error) {
