@@ -35,6 +35,13 @@ router.get("/cursosTipo", async (req, res) => {
         _count: {
           select: { cursos: true }
         }
+      },
+      where: {
+        cursos: {
+          some: {
+            ativo: true
+          }
+        }
       }
     })
 
@@ -64,6 +71,9 @@ router.get("/clientesCidade", async (req, res) => {
       _count: {
         cidade: true,
       },
+      where: {
+        ativo: true
+      }
     })
 
     const clientes2 = clientes.map((cliente: ClienteGroupByCidade) => ({
