@@ -134,7 +134,7 @@ router.patch("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   const { id } = req.params
   try {
-    const duvidas = await prisma.duvida.findFirst({
+    const duvidas = await prisma.duvida.delete({
       where: { id: Number(id) }
     })
     res.status(200).json(duvidas)
