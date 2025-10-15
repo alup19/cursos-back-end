@@ -33,7 +33,12 @@ router.get("/cursosTipo", async (req, res) => {
       select: {
         nome: true,
         _count: {
-          select: { cursos: true }
+          select: { cursos: {
+            where: {
+              ativo: true
+            }
+          } 
+        }
         }
       },
       where: {

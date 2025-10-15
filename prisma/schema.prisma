@@ -23,7 +23,7 @@ model TipoCurso {
 model Professor {
   id            Int           @id @default(autoincrement())
   nome          String        @db.VarChar(30)
-  email         String        @db.VarChar(50)
+  email         String        @db.VarChar(60)
   telefone      String        @db.VarChar(11)
   cursos        Curso[]
   @@map("professores")
@@ -35,7 +35,7 @@ model Curso {
   preco           Decimal       @db.Decimal(10, 2)
   foto            String
   cargaHoraria    String        @db.VarChar(5)
-  descricao       String        @db.VarChar(100)
+  descricao       String        @db.VarChar(255)
   destaque        Boolean       @default(true)
   created_At      DateTime      @default(now())
   updated_At      DateTime      @updatedAt()
@@ -52,7 +52,7 @@ model Curso {
 
 model Duvida {
   id              Int           @id @default(autoincrement())
-  descricao       String        @db.VarChar(100)
+  descricao       String        @db.VarChar(255)
   resposta        String?
   created_At      DateTime      @default(now())
   updated_At      DateTime      @updatedAt()
@@ -68,11 +68,11 @@ model Duvida {
 model Cliente {
   id              String        @db.VarChar(36) @id @default(uuid())
   nome            String        @db.VarChar(30)
-  email           String        @db.VarChar(50)
+  email           String        @db.VarChar(60)
   senha           String        @db.VarChar(60)
   created_At      DateTime      @default(now())
   updated_At      DateTime      @updatedAt()
-  cidade          String        @db.VarChar(100)
+  cidade          String        @db.VarChar(50)
   telefone        String        @db.VarChar(11)
   duvidas         Duvida[]
   ativo           Boolean       @default(true)
